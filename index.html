@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html><!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -6,67 +6,148 @@
 <title>Last Nights 1</title>
 <style>
   * { box-sizing: border-box }
-  body { margin: 0; overflow: hidden; background: #050706; color: #dce8df;
-         font: 14px monospace }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #050706;
+    color: #dce8df;
+    font: 14px monospace;
+  }
   canvas { display: block }
-  button { color: #d6ffe1; background: #101812; border: 1px solid #62816b;
-           padding: 10px; font: inherit; cursor: pointer }
+  button {
+    color: #d6ffe1;
+    background: #101812;
+    border: 1px solid #62816b;
+    padding: 10px;
+    font: inherit;
+    cursor: pointer;
+  }
   button:hover, button.on { background: #294532 }
   #hud { position: fixed; inset: 0; pointer-events: none }
-  #top { display: flex; justify-content: space-between; padding: 15px 18px;
-         background: linear-gradient(#020403d9, transparent); text-shadow: 0 0 8px #86ffa6 }
-  #leftStatus { position: absolute; left: 16px; top: 64px; line-height: 1.7;
-                text-shadow: 0 0 7px #80ffa0 }
-  #powerTrack { width: 180px; height: 14px; border: 1px solid #b9d0bf;
-                background: #101310 }
+  #top {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 18px;
+    background: linear-gradient(#020403d9, transparent);
+    text-shadow: 0 0 8px #86ffa6;
+  }
+  #leftStatus {
+    position: absolute;
+    left: 16px;
+    top: 64px;
+    line-height: 1.7;
+    text-shadow: 0 0 7px #80ffa0;
+  }
+  #powerTrack {
+    width: 180px;
+    height: 14px;
+    border: 1px solid #b9d0bf;
+    background: #101310;
+  }
   #powerBar { height: 100%; width: 100%; background: #70e88a }
-  #controls { position: absolute; bottom: 14px; left: 14px; right: 14px;
-              display: flex; flex-wrap: wrap; gap: 7px; justify-content: center;
-              pointer-events: auto }
-  #cams { position: fixed; right: 18px; top: 68px; display: none; z-index: 2;
-          width: min(330px, 45vw); padding: 12px; background: #06100bdc;
-          border: 1px solid #52745e; box-shadow: 0 0 20px #000 }
+  #controls {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
+    pointer-events: auto;
+  }
+  #cams {
+    position: fixed;
+    right: 18px;
+    top: 68px;
+    display: none;
+    z-index: 2;
+    width: min(330px, 45vw);
+    padding: 12px;
+    background: #06100bdc;
+    border: 1px solid #52745e;
+    box-shadow: 0 0 20px #000;
+  }
   #camTitle { color: #a8ffbb; margin-bottom: 8px }
   #camMap { display: grid; grid-template-columns: 1fr 1fr; gap: 5px }
   #camMap button { padding: 7px; font-size: 12px }
-  #feed { margin-top: 10px; min-height: 76px; padding: 10px; color: #c0d4c5;
-          background: repeating-linear-gradient(0deg,#16221a,#16221a 2px,#0c140f 3px,#0c140f 5px) }
-  #warning { position: fixed; left: 0; right: 0; top: 43%; text-align: center;
-             color: #ff6262; font-size: 21px; text-shadow: 0 0 12px red;
-             pointer-events: none }
-  #maskShade { position: fixed; inset: 0; z-index: 3; display: none;
-               pointer-events: none; background: radial-gradient(ellipse,transparent 27%,#000 72%);
-               border: 32px solid #111; box-shadow: inset 0 0 35px #000 }
-  #scare, #menu { position: fixed; inset: 0; display: none; place-items: center;
-                  z-index: 5; background: #030403f2; text-align: center }
-  #menu { display: grid; z-index: 6 }
-  #panel { width: min(520px,92vw); padding: 26px; background: #09110c;
-           border: 1px solid #668b70 }
-  #face { width: min(65vw,65vh); height: min(65vw,65vh); border-radius: 45%;
-          position: relative; background: #72756b; box-shadow: inset 0 0 55px #000,0 0 70px #b00;
-          animation: lunge .28s infinite alternate steps(2) }
-  .eye { position: absolute; top: 30%; width: 20%; height: 16%; border-radius: 50%;
-         background: #ff2818; box-shadow: 0 0 25px red }
-  .eye:first-child { left: 17% } .eye:nth-child(2) { right: 17% }
-  #mouth { position: absolute; top: 60%; left: 24%; width: 52%; height: 22%;
-           background: #170d0b; border: 5px solid #38231d; border-radius: 12% 12% 45% 45% }
-  @keyframes lunge { from { transform: scale(.75) rotate(-5deg) }
-                     to { transform: scale(1.2) rotate(5deg) } }
+  #feed {
+    margin-top: 10px;
+    min-height: 76px;
+    padding: 10px;
+    color: #c0d4c5;
+    background: repeating-linear-gradient(
+      0deg, #16221a, #16221a 2px, #0c140f 3px, #0c140f 5px
+    );
+  }
+  #warning {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 43%;
+    text-align: center;
+    color: #ff6262;
+    font-size: 21px;
+    text-shadow: 0 0 12px red;
+    pointer-events: none;
+  }
+  #maskShade {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    display: none;
+    pointer-events: none;
+    background: radial-gradient(ellipse, transparent 25%, #000 72%);
+    border: 32px solid #111;
+    box-shadow: inset 0 0 35px #000;
+  }
+  #scare, #menu {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    z-index: 5;
+    text-align: center;
+  }
+  #scare {
+    background: radial-gradient(ellipse at center, #24000012 15%, #000 90%);
+    pointer-events: none;
+  }
+  #menu {
+    display: grid;
+    z-index: 6;
+    background: #030403f2;
+  }
+  #panel {
+    width: min(520px, 92vw);
+    padding: 26px;
+    background: #09110c;
+    border: 1px solid #668b70;
+  }
+  @media (max-width: 600px) {
+    #controls button { padding: 8px; font-size: 11px }
+    #leftStatus { top: 55px }
+  }
 </style>
 </head>
 <body>
 <div id="hud">
   <div id="top"><b>LAST NIGHTS 1</b><span id="time">12:00 AM</span></div>
+
   <div id="leftStatus">
-    POWER <span id="powerText">100</span>%<div id="powerTrack"><div id="powerBar"></div></div>
+    POWER <span id="powerText">100</span>%
+    <div id="powerTrack"><div id="powerBar"></div></div>
     <span id="systemText">SYSTEMS NORMAL</span>
   </div>
+
   <div id="warning"></div>
+
   <div id="cams">
     <div id="camTitle">CAMERAS — <span id="camName">STAGE</span></div>
     <div id="camMap"></div>
     <div id="feed">STATIC — no movement detected</div>
   </div>
+
   <div id="controls">
     <button data-device="leftDoor">LEFT DOOR: OPEN</button>
     <button data-device="rightDoor">RIGHT DOOR: OPEN</button>
@@ -77,36 +158,183 @@
     <button id="radioBtn">RADIO: OFF</button>
   </div>
 </div>
+
 <div id="maskShade"></div>
-<div id="scare"><div id="face"><div class="eye"></div><div class="eye"></div><div id="mouth"></div></div></div>
-<div id="menu"><div id="panel">
-  <h1 id="title">LAST NIGHTS 1</h1>
-  <p id="description">Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.</p>
-  <p>Close the correct door or blind when something approaches. The mask can protect you, but every system uses power.</p>
-  <button id="start">START NIGHT</button>
-</div></div>
+<div id="scare"></div>
+
+<div id="menu">
+  <div id="panel">
+    <h1 id="title">LAST NIGHTS 1</h1>
+    <p id="description">
+      Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.
+    </p>
+    <p>
+      Close the correct door or blind when something approaches.
+      The mask can protect you, but every system uses power.
+    </p>
+    <button id="start">START NIGHT</button>
+  </div>
+</div>
 
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
+/* ---------- Scene setup ---------- */
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050706);
 scene.fog = new THREE.Fog(0x050706, 8, 24);
 
 const camera = new THREE.PerspectiveCamera(65, innerWidth / innerHeight, .1, 60);
 camera.position.set(0, 1.65, 5);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 document.body.appendChild(renderer.domElement);
 
 scene.add(new THREE.HemisphereLight(0x9aab9a, 0x17120e, 1.25));
 const lamp = new THREE.PointLight(0xbaffca, 22, 14);
 lamp.position.set(0, 3.2, 1);
+lamp.castShadow = true;
 scene.add(lamp);
 
-function mat(color, roughness = .9) {
+const $ = id => document.getElementById(id);
+
+/* ---------- Procedural textures: all made in code ---------- */
+function makeCanvasTexture(kind, colorMap = true) {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+
+  if (kind === "brick" || kind === "brickBump") {
+    const bump = kind === "brickBump";
+    ctx.fillStyle = bump ? "#404040" : "#392c27";
+    ctx.fillRect(0, 0, 512, 512);
+
+    const brickW = 128, brickH = 64;
+    for (let row = 0; row < 8; row++) {
+      const offset = row % 2 ? -brickW / 2 : 0;
+      for (let col = -1; col < 5; col++) {
+        const x = col * brickW + offset;
+        const y = row * brickH;
+        const shade = 95 + Math.floor(Math.random() * 75);
+
+        ctx.fillStyle = bump
+          ? `rgb(${shade + 55},${shade + 55},${shade + 55})`
+          : `rgb(${shade},${Math.floor(shade * .62)},${Math.floor(shade * .49)})`;
+        ctx.fillRect(x + 4, y + 4, brickW - 8, brickH - 8);
+
+        for (let i = 0; i < 38; i++) {
+          const speck = bump ? 25 + Math.random() * 90 : Math.random() * 45;
+          ctx.fillStyle = bump
+            ? `rgba(0,0,0,${Math.random() * .18})`
+            : `rgba(12,7,5,${Math.random() * .22})`;
+          ctx.fillRect(
+            x + Math.random() * brickW,
+            y + Math.random() * brickH,
+            2 + Math.random() * 10,
+            2 + Math.random() * 5
+          );
+        }
+      }
+    }
+  }
+
+  if (kind === "wood" || kind === "woodRough") {
+    const rough = kind === "woodRough";
+    ctx.fillStyle = rough ? "#777777" : "#39291d";
+    ctx.fillRect(0, 0, 512, 512);
+
+    const plankH = 128;
+    for (let row = 0; row < 4; row++) {
+      const shade = 65 + Math.floor(Math.random() * 40);
+      ctx.fillStyle = rough
+        ? `rgb(${shade + 35},${shade + 35},${shade + 35})`
+        : `rgb(${shade},${Math.floor(shade * .7)},${Math.floor(shade * .48)})`;
+      ctx.fillRect(0, row * plankH + 3, 512, plankH - 6);
+
+      ctx.strokeStyle = rough ? "rgba(20,20,20,.55)" : "rgba(15,9,5,.45)";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, row * plankH);
+      ctx.lineTo(512, row * plankH);
+      ctx.stroke();
+
+      for (let i = 0; i < 65; i++) {
+        const y = row * plankH + Math.random() * plankH;
+        ctx.strokeStyle = rough
+          ? `rgba(30,30,30,${Math.random() * .2})`
+          : `rgba(15,8,4,${Math.random() * .28})`;
+        ctx.lineWidth = 1 + Math.random() * 3;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * 80, y);
+        ctx.bezierCurveTo(160, y - 9, 330, y + 9, 512, y);
+        ctx.stroke();
+      }
+    }
+    for (const x of [170, 370]) {
+      ctx.fillStyle = rough ? "#444" : "#211911";
+      ctx.fillRect(x, 0, 3, 512);
+    }
+  }
+
+  if (kind === "metal" || kind === "metalRough") {
+    const rough = kind === "metalRough";
+    ctx.fillStyle = rough ? "#777777" : "#353a38";
+    ctx.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 900; i++) {
+      const shade = 50 + Math.random() * 150;
+      ctx.strokeStyle = rough
+        ? `rgba(${shade},${shade},${shade},${Math.random() * .28})`
+        : `rgba(${shade},${shade},${shade},${Math.random() * .24})`;
+      ctx.lineWidth = 1 + Math.random() * 3;
+      const x = Math.random() * 512, y = Math.random() * 512;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.random() * 48, y + (Math.random() - .5) * 5);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(0,0,0,.35)";
+    for (let y = 64; y < 512; y += 128) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.colorSpace = colorMap ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return texture;
+}
+
+const brickTexture = makeCanvasTexture("brick");
+const brickBump = makeCanvasTexture("brickBump", false);
+const woodTexture = makeCanvasTexture("wood");
+const woodRoughness = makeCanvasTexture("woodRough", false);
+const metalTexture = makeCanvasTexture("metal");
+const metalRoughness = makeCanvasTexture("metalRough", false);
+
+function texturedMaterial(map, options = {}) {
+  return new THREE.MeshStandardMaterial({ map, ...options });
+}
+
+const wallMat = texturedMaterial(brickTexture, {
+  bumpMap: brickBump, bumpScale: .075, roughness: .96
+});
+const floorMat = texturedMaterial(woodTexture, {
+  roughnessMap: woodRoughness, roughness: .88
+});
+const deskMat = texturedMaterial(woodTexture, {
+  roughnessMap: woodRoughness, roughness: .82
+});
+const steelMat = texturedMaterial(metalTexture, {
+  roughnessMap: metalRoughness, roughness: .72, metalness: .24
+});
+
+function flat(color, roughness = .85) {
   return new THREE.MeshStandardMaterial({ color, roughness });
 }
 function box(x, y, z, w, h, d, material, parent = scene) {
@@ -117,96 +345,240 @@ function box(x, y, z, w, h, d, material, parent = scene) {
   return mesh;
 }
 
-// Office
-box(0, -.15, 0, 10, .3, 12, mat(0x28241e));
-box(0, 4, 0, 10, .2, 12, mat(0x111511));
-box(0, 2, -6, 10, 4, .25, mat(0x34382f));
-box(-5, 2, 0, .25, 4, 12, mat(0x34382f));
-box(5, 2, 0, .25, 4, 12, mat(0x34382f));
+/* ---------- One-room office ---------- */
+box(0, -.15, 0, 10, .3, 12, floorMat);
+box(0, 4, 0, 10, .2, 12, flat(0x111511));
 
-// Desk and monitor
-box(0, .85, 2.2, 4.4, .2, 1.5, mat(0x422d20));
-box(-1.7, .4, 2.2, .16, .8, .16, mat(0x211914));
-box(1.7, .4, 2.2, .16, .8, .16, mat(0x211914));
-box(0, 1.5, 1.55, 1.15, .75, .12, mat(0x111a15));
-box(0, 1.5, 1.48, .95, .54, .02,
-    new THREE.MeshBasicMaterial({ color: 0x143b25 }));
+// Back wall with two window openings
+box(0, .65, -6, 10, 1.3, .25, wallMat);
+box(0, 3.68, -6, 10, .64, .25, wallMat);
+box(-4.1, 2.15, -6, 1.8, 1.8, .25, wallMat);
+box(0, 2.15, -6, 2.2, 1.8, .25, wallMat);
+box(4.1, 2.15, -6, 1.8, 1.8, .25, wallMat);
 
-// Two sliding door panels.
-const doors = {
-  left: box(-4.65, 1.65, -1.4, .18, 3.2, 2.5, mat(0x55574f)),
-  right: box(4.65, 1.65, -1.4, .18, 3.2, 2.5, mat(0x55574f))
-};
-for (const x of [-4.83, 4.83]) {
-  box(x, 1.65, -1.4, .12, 3.5, 2.8, mat(0x171a16));
+// Side walls, with gaps for the two doors
+box(-5, 2, -4.55, .25, 4, 2.9, wallMat);
+box(-5, 2, 2.25, .25, 4, 7.5, wallMat);
+box(5, 2, -4.55, .25, 4, 2.9, wallMat);
+box(5, 2, 2.25, .25, 4, 7.5, wallMat);
+
+// Door frames and sliding panels
+for (const x of [-4.86, 4.86]) {
+  box(x, 1.7, -1.4, .18, 3.5, 2.8, steelMat);
+  box(x, 1.7, -1.4, .23, 3.15, 2.35, flat(0x202622));
 }
+const doors = {
+  left: box(-4.68, 1.65, -1.4, .17, 3.2, 2.45, steelMat),
+  right: box(4.68, 1.65, -1.4, .17, 3.2, 2.45, steelMat)
+};
 
-// Two windows with animated slats.
+// Dark windows and adjustable blind slats
 const blinds = {};
 for (const [name, x] of [["leftBlind", -2.05], ["rightBlind", 2.05]]) {
-  box(x, 2.35, -5.82, 1.65, 1.9, .08, mat(0x07100b));
+  box(x, 2.15, -5.82, 1.7, 1.8, .08, flat(0x060b08));
   const slats = [];
   for (let i = 0; i < 8; i++) {
-    slats.push(box(x, 1.65 + i * .2, -5.72, 1.55, .09, .1, mat(0x77796c)));
+    slats.push(box(x, 1.42 + i * .2, -5.69, 1.62, .09, .12, steelMat));
   }
   blinds[name] = slats;
 }
 
-// Simple silhouettes outside the office.
-function makeFigure(color) {
-  const g = new THREE.Group();
-  const bodyMat = mat(color, .55);
-  box(0, 1.2, 0, .8, 1.3, .5, bodyMat, g);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(.48, 14, 10), bodyMat);
-  head.position.y = 2.15; head.castShadow = true; g.add(head);
-  for (const x of [-.17, .17]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(.07, 8, 8),
-      new THREE.MeshBasicMaterial({ color: 0xff291b }));
-    eye.position.set(x, 2.2, -.43); g.add(eye);
-  }
-  g.visible = false;
-  scene.add(g);
-  return g;
+// Desk and monitor
+box(0, .85, 2.2, 4.4, .2, 1.5, deskMat);
+box(-1.7, .4, 2.2, .16, .8, .16, steelMat);
+box(1.7, .4, 2.2, .16, .8, .16, steelMat);
+box(0, 1.5, 1.55, 1.15, .75, .12, steelMat);
+box(0, 1.5, 1.48, .95, .54, .02,
+  new THREE.MeshBasicMaterial({ color: 0x17462a }));
+
+// Small desk clutter
+for (let i = 0; i < 4; i++) {
+  const can = new THREE.Mesh(
+    new THREE.CylinderGeometry(.12, .14, .32, 12),
+    i % 2 ? steelMat : flat(0x786249)
+  );
+  can.position.set(-1.35 + i * .55, 1.1, 1.95);
+  can.castShadow = true;
+  scene.add(can);
 }
+
+/* ---------- 3D figures and threats ---------- */
+function makeBot(color, eyeColor) {
+  const group = new THREE.Group();
+  const shell = texturedMaterial(metalTexture, {
+    color, roughnessMap: metalRoughness, roughness: .72, metalness: .18
+  });
+
+  box(0, 1.25, 0, .82, 1.15, .5, shell, group);
+
+  const head = new THREE.Group();
+  head.position.set(0, 2.15, 0);
+  group.add(head);
+
+  const skull = new THREE.Mesh(new THREE.SphereGeometry(.48, 16, 12), shell);
+  skull.castShadow = true;
+  head.add(skull);
+
+  for (const x of [-.18, .18]) {
+    const eye = new THREE.Mesh(
+      new THREE.SphereGeometry(.075, 10, 8),
+      new THREE.MeshBasicMaterial({ color: eyeColor })
+    );
+    eye.position.set(x, .02, -.43);
+    head.add(eye);
+  }
+
+  const muzzle = new THREE.Mesh(
+    new THREE.BoxGeometry(.42, .22, .16),
+    flat(0x8b8272)
+  );
+  muzzle.position.set(0, -.2, -.43);
+  head.add(muzzle);
+
+  const mouth = new THREE.Mesh(
+    new THREE.BoxGeometry(.32, .08, .04),
+    flat(0x120908)
+  );
+  mouth.position.set(0, -.31, -.52);
+  head.add(mouth);
+
+  const limbs = [];
+  for (const side of [-1, 1]) {
+    const arm = new THREE.Group();
+    arm.position.set(side * .5, 1.7, 0);
+    group.add(arm);
+    const upperArm = new THREE.Mesh(
+      new THREE.CylinderGeometry(.11, .15, .72, 10), shell
+    );
+    upperArm.position.y = -.32;
+    arm.add(upperArm);
+
+    const leg = new THREE.Group();
+    leg.position.set(side * .22, .78, 0);
+    group.add(leg);
+    const lowerLeg = new THREE.Mesh(
+      new THREE.CylinderGeometry(.13, .16, .68, 10), steelMat
+    );
+    lowerLeg.position.y = -.32;
+    leg.add(lowerLeg);
+
+    limbs.push({ arm, leg, side });
+  }
+
+  group.userData = { head, limbs };
+  group.visible = false;
+  scene.add(group);
+  return group;
+}
+
 const figures = {
-  leftDoor: makeFigure(0x605d4e),
-  rightDoor: makeFigure(0x4d6159),
-  leftBlind: makeFigure(0x705a50),
-  rightBlind: makeFigure(0x54536c),
-  mask: makeFigure(0x776b4c)
+  leftDoor: makeBot(0x776448, 0xff3522),
+  rightDoor: makeBot(0x536b65, 0xffb829),
+  leftBlind: makeBot(0x75524b, 0x70dfff),
+  rightBlind: makeBot(0x62536d, 0xff3c25),
+  mask: makeBot(0x77714d, 0xff281c)
 };
-figures.leftDoor.position.set(-4.5, 0, -1.5);
-figures.rightDoor.position.set(4.5, 0, -1.5);
+figures.leftDoor.position.set(-4.3, 0, -1.4);
+figures.rightDoor.position.set(4.3, 0, -1.4);
 figures.leftBlind.position.set(-2, 0, -5.2);
 figures.rightBlind.position.set(2, 0, -5.2);
-figures.mask.position.set(0, 0, 1.5);
+figures.mask.position.set(0, 0, 1.4);
 
-// Camera choices
+// Attach an additional model to the camera for the lunge animation.
+const scareModel = makeBot(0x777264, 0xff2015);
+scene.remove(scareModel);
+camera.add(scareModel);
+scareModel.position.set(0, -1.25, -1.65);
+scareModel.visible = false;
+
+/* ---------- Camera monitor ---------- */
 const cameraNames = ["STAGE", "DINING ROOM", "KITCHEN", "BACK HALL", "SUPPLY ROOM"];
 let selectedCam = "STAGE";
+
 for (const name of cameraNames) {
-  const b = document.createElement("button");
-  b.textContent = name;
-  b.onclick = () => {
+  const button = document.createElement("button");
+  button.textContent = name;
+  button.onclick = () => {
     selectedCam = name;
-    document.querySelector("#camName").textContent = name;
+    $("camName").textContent = name;
     updateFeed();
   };
-  document.querySelector("#camMap").appendChild(b);
+  $("camMap").appendChild(button);
 }
 
-// Game state
-const devices = { leftDoor: false, rightDoor: false, leftBlind: false, rightBlind: false };
-let running = false, ended = false, elapsed = 0, power = 100;
-let maskOn = false, camerasOn = false, radioOn = false;
-let attack = null, nextAttack = 9;
-let yaw = 0;
-const $ = id => document.getElementById(id);
-const lanes = ["leftDoor", "rightDoor", "leftBlind", "rightBlind", "mask"];
-const laneNames = {
-  leftDoor: "LEFT DOOR", rightDoor: "RIGHT DOOR",
-  leftBlind: "LEFT BLIND", rightBlind: "RIGHT BLIND", mask: "OFFICE"
+/* ---------- 3D clickable desk controls ---------- */
+const clickable3D = [];
+
+function addDeskButton(label, control, x, z, color = 0x385a43) {
+  const base = new THREE.Mesh(
+    new THREE.CylinderGeometry(.22, .25, .12, 16),
+    steelMat
+  );
+  base.position.set(x, 1.02, z);
+  scene.add(base);
+
+  const top = new THREE.Mesh(
+    new THREE.CylinderGeometry(.17, .2, .12, 16),
+    new THREE.MeshStandardMaterial({
+      color,
+      emissive: color,
+      emissiveIntensity: .13,
+      roughness: .55
+    })
+  );
+  top.position.set(x, 1.13, z);
+  top.userData.control = control;
+  scene.add(top);
+  clickable3D.push(top);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 96;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#07100a";
+  ctx.fillRect(0, 0, 256, 96);
+  ctx.fillStyle = "#d8ffe1";
+  ctx.font = "bold 28px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(label, 128, 60);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+
+  const sign = new THREE.Mesh(
+    new THREE.PlaneGeometry(.55, .2),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+  );
+  sign.position.set(x, 1.32, z);
+  scene.add(sign);
+}
+
+addDeskButton("L DOOR", "leftDoor", -1.35, 2.65, 0x733b35);
+addDeskButton("R DOOR", "rightDoor", -.45, 2.65, 0x733b35);
+addDeskButton("L BLIND", "leftBlind", .45, 2.65);
+addDeskButton("R BLIND", "rightBlind", 1.35, 2.65);
+addDeskButton("MASK", "maskBtn", -1.15, 1.9, 0x77764b);
+addDeskButton("CAM", "camBtn", 0, 1.9, 0x354c72);
+addDeskButton("RADIO", "radioBtn", 1.15, 1.9, 0x614878);
+
+/* ---------- Game state and UI ---------- */
+const devices = {
+  leftDoor: false,
+  rightDoor: false,
+  leftBlind: false,
+  rightBlind: false
 };
+
+let running = false;
+let ended = false;
+let elapsed = 0;
+let power = 100;
+let maskOn = false;
+let camerasOn = false;
+let radioOn = false;
+let attack = null;
+let nextAttack = 7;
+let yaw = 0;
 
 function updateUI() {
   document.querySelectorAll("[data-device]").forEach(button => {
@@ -215,6 +587,7 @@ function updateUI() {
     button.textContent = `${label}: ${devices[key] ? "CLOSED" : "OPEN"}`;
     button.classList.toggle("on", devices[key]);
   });
+
   $("maskBtn").textContent = `MASK: ${maskOn ? "ON" : "OFF"}`;
   $("maskBtn").classList.toggle("on", maskOn);
   $("camBtn").textContent = `CAMERAS: ${camerasOn ? "ON" : "OFF"}`;
@@ -223,11 +596,40 @@ function updateUI() {
   $("maskShade").style.display = maskOn ? "block" : "none";
   $("powerText").textContent = Math.ceil(power);
   $("powerBar").style.width = `${Math.max(0, power)}%`;
-  $("powerBar").style.background = power < 25 ? "#ed4545" : power < 50 ? "#e0c547" : "#70e88a";
+  $("powerBar").style.background =
+    power < 25 ? "#ed4545" : power < 50 ? "#e0c547" : "#70e88a";
 }
 
-// Synthesized eerie radio loop; no audio files needed.
-let audioCtx, radioNodes = [], radioTimer;
+function updateFeed() {
+  $("feed").textContent = attack && attack.progress > .25
+    ? `STATIC — MOVEMENT: ${attack.lane.replace(/([A-Z])/g, " $1").toUpperCase()}`
+    : "STATIC — no movement detected";
+}
+
+/* ---------- Synthesized sound and radio ---------- */
+let audioCtx;
+let radioNodes = [];
+let radioTimer;
+
+function beep(freq = 120, duration = .15, volume = .05) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = audioCtx || new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch {}
+}
+
 function stopRadio() {
   clearInterval(radioTimer);
   for (const node of radioNodes) {
@@ -235,72 +637,43 @@ function stopRadio() {
   }
   radioNodes = [];
 }
+
 function startRadio() {
   const AC = window.AudioContext || window.webkitAudioContext;
   audioCtx = audioCtx || new AC();
   if (audioCtx.state === "suspended") audioCtx.resume();
+
   const gain = audioCtx.createGain();
   gain.gain.value = .035;
   gain.connect(audioCtx.destination);
-  const osc = audioCtx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.value = 68;
-  osc.connect(gain); osc.start();
+
+  const drone = audioCtx.createOscillator();
+  drone.type = "triangle";
+  drone.frequency.value = 68;
+  drone.connect(gain);
+  drone.start();
+
   const wobble = audioCtx.createOscillator();
   const wobbleGain = audioCtx.createGain();
-  wobble.frequency.value = .18; wobbleGain.gain.value = 9;
-  wobble.connect(wobbleGain); wobbleGain.connect(osc.frequency); wobble.start();
-  radioNodes = [osc, wobble];
+  wobble.frequency.value = .18;
+  wobbleGain.gain.value = 9;
+  wobble.connect(wobbleGain);
+  wobbleGain.connect(drone.frequency);
+  wobble.start();
+
+  radioNodes = [drone, wobble];
+
   radioTimer = setInterval(() => {
     const notes = [55, 65.4, 73.4, 82.4, 98];
-    osc.frequency.setTargetAtTime(notes[Math.floor(Math.random() * notes.length)],
-      audioCtx.currentTime, .6);
+    drone.frequency.setTargetAtTime(
+      notes[Math.floor(Math.random() * notes.length)],
+      audioCtx.currentTime,
+      .6
+    );
   }, 1800);
 }
-function beep(freq = 120, duration = .15) {
-  try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    audioCtx = audioCtx || new AC();
-    if (audioCtx.state === "suspended") audioCtx.resume();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = "sawtooth"; o.frequency.value = freq;
-    g.gain.setValueAtTime(.05, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + duration);
-  } catch {}
-}
 
-function updateFeed() {
-  const visible = attack && attack.progress > .25;
-  $("feed").textContent = visible
-    ? `STATIC — MOVEMENT: ${laneNames[attack.lane]}`
-    : "STATIC — no movement detected";
-}
-function scare() {
-  if (ended) return;
-  ended = true; running = false;
-  stopRadio();
-  $("scare").style.display = "grid";
-  beep(95, .8);
-  setTimeout(() => {
-    $("scare").style.display = "none";
-    $("title").textContent = "SHIFT OVER";
-    $("description").textContent = "Something got into the office. Try again and watch your power.";
-    $("start").textContent = "TRY AGAIN";
-    $("menu").style.display = "grid";
-  }, 1200);
-}
-function surviveAttack() {
-  $("warning").textContent = "IT MOVED AWAY";
-  beep(70, .22);
-  attack = null;
-  nextAttack = 8 + Math.random() * 10;
-  Object.values(figures).forEach(f => f.visible = false);
-  updateFeed();
-  setTimeout(() => { if (running) $("warning").textContent = ""; }, 1500);
-}
-
+/* ---------- Controls ---------- */
 document.querySelectorAll("[data-device]").forEach(button => {
   button.onclick = () => {
     if (!running || ended || power <= 0) return;
@@ -310,69 +683,186 @@ document.querySelectorAll("[data-device]").forEach(button => {
     updateUI();
   };
 });
+
 $("maskBtn").onclick = () => {
   if (!running || ended || power <= 0) return;
-  maskOn = !maskOn; beep(maskOn ? 75 : 160); updateUI();
-};
-$("camBtn").onclick = () => {
-  if (!running || ended || power <= 0) return;
-  camerasOn = !camerasOn; beep(camerasOn ? 400 : 220); updateUI(); updateFeed();
-};
-$("radioBtn").onclick = () => {
-  if (!running || ended || power <= 0) return;
-  radioOn = !radioOn;
-  if (radioOn) startRadio(); else stopRadio();
+  maskOn = !maskOn;
+  beep(maskOn ? 75 : 160);
   updateUI();
 };
 
-$("start").onclick = () => {
-  $("menu").style.display = "none";
-  $("scare").style.display = "none";
-  $("title").textContent = "LAST NIGHTS 1";
-  $("start").textContent = "START NIGHT";
-  $("description").textContent = "Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.";
-  running = true; ended = false; elapsed = 0; power = 100;
-  attack = null; nextAttack = 7 + Math.random() * 6;
-  maskOn = camerasOn = radioOn = false;
-  for (const k of Object.keys(devices)) devices[k] = false;
-  Object.values(figures).forEach(f => f.visible = false);
-  $("warning").textContent = "";
+$("camBtn").onclick = () => {
+  if (!running || ended || power <= 0) return;
+  camerasOn = !camerasOn;
+  beep(camerasOn ? 400 : 220);
+  updateUI();
+  updateFeed();
+};
+
+$("radioBtn").onclick = () => {
+  if (!running || ended || power <= 0) return;
+  radioOn = !radioOn;
+  if (radioOn) startRadio();
+  else stopRadio();
   updateUI();
 };
+
+/* ---------- Threats and jumpscare ---------- */
+const lanes = ["leftDoor", "rightDoor", "leftBlind", "rightBlind", "mask"];
+
+function surviveAttack() {
+  $("warning").textContent = "IT MOVED AWAY";
+  beep(70, .22);
+  attack = null;
+  nextAttack = 8 + Math.random() * 10;
+  Object.values(figures).forEach(figure => figure.visible = false);
+  updateFeed();
+  setTimeout(() => {
+    if (running) $("warning").textContent = "";
+  }, 1300);
+}
+
+function jumpscare() {
+  if (ended) return;
+  ended = true;
+  running = false;
+  stopRadio();
+
+  $("scare").style.display = "grid";
+  scareModel.visible = true;
+  scareModel.scale.setScalar(.025);
+  beep(82, .8, .12);
+
+  const startAt = performance.now();
+  const oldX = camera.position.x;
+  const oldY = camera.position.y;
+
+  function lunge(now) {
+    const t = Math.min(1, (now - startAt) / 760);
+    const punch = t * t * (3 - 2 * t);
+    scareModel.scale.setScalar(.025 + punch * 1.45);
+    scareModel.rotation.z = Math.sin(now * .045) * .12;
+    scareModel.rotation.y = Math.sin(now * .035) * .18;
+    camera.position.x = oldX + (Math.random() - .5) * .12;
+    camera.position.y = oldY + (Math.random() - .5) * .1;
+
+    if (t < 1) {
+      requestAnimationFrame(lunge);
+    } else {
+      setTimeout(() => {
+        scareModel.visible = false;
+        camera.position.x = oldX;
+        camera.position.y = oldY;
+        $("scare").style.display = "none";
+        $("title").textContent = "SHIFT OVER";
+        $("description").textContent =
+          "Something got into the office. Try again and watch your power.";
+        $("start").textContent = "TRY AGAIN";
+        $("menu").style.display = "grid";
+      }, 220);
+    }
+  }
+  requestAnimationFrame(lunge);
+}
 
 function attemptDefense() {
   if (!attack) return;
   const defended = maskOn || devices[attack.lane];
+
   if (defended) {
     power = Math.max(0, power - 2);
     surviveAttack();
   } else {
-    scare();
+    jumpscare();
   }
 }
 
-addEventListener("keydown", e => {
-  if (e.code === "KeyA") yaw = Math.min(.75, yaw + .07);
-  if (e.code === "KeyD") yaw = Math.max(-.75, yaw - .07);
-  if (e.code === "Space" && running) {
-    e.preventDefault(); maskOn = !maskOn; updateUI();
+function winNight() {
+  ended = true;
+  running = false;
+  stopRadio();
+  $("title").textContent = "6:00 AM";
+  $("description").textContent = "You survived the night.";
+  $("start").textContent = "PLAY AGAIN";
+  $("menu").style.display = "grid";
+}
+
+/* ---------- Start / restart ---------- */
+$("start").onclick = () => {
+  $("menu").style.display = "none";
+  $("scare").style.display = "none";
+  scareModel.visible = false;
+
+  $("title").textContent = "LAST NIGHTS 1";
+  $("description").textContent =
+    "Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.";
+  $("start").textContent = "START NIGHT";
+
+  running = true;
+  ended = false;
+  elapsed = 0;
+  power = 100;
+  attack = null;
+  nextAttack = 7 + Math.random() * 6;
+  maskOn = camerasOn = radioOn = false;
+
+  for (const key of Object.keys(devices)) devices[key] = false;
+  Object.values(figures).forEach(figure => figure.visible = false);
+  $("warning").textContent = "";
+  $("time").textContent = "12:00 AM";
+  $("systemText").textContent = "SYSTEMS NORMAL";
+  updateUI();
+  updateFeed();
+};
+
+/* ---------- 3D click interaction and looking ---------- */
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+renderer.domElement.addEventListener("click", event => {
+  pointer.x = (event.clientX / innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+
+  const hit = raycaster.intersectObjects(clickable3D, false)[0];
+  if (hit) {
+    const control = hit.object.userData.control;
+
+    if (control === "maskBtn") $("maskBtn").click();
+    else if (control === "camBtn") $("camBtn").click();
+    else if (control === "radioBtn") $("radioBtn").click();
+    else document.querySelector(`[data-device="${control}"]`)?.click();
+
+    return;
   }
-});
-addEventListener("mousemove", e => {
-  if (document.pointerLockElement === renderer.domElement) {
-    yaw = THREE.MathUtils.clamp(yaw - e.movementX * .002, -.8, .8);
-  }
-});
-renderer.domElement.addEventListener("click", () => {
+
   if (running) renderer.domElement.requestPointerLock?.();
 });
+
+addEventListener("keydown", event => {
+  if (event.code === "KeyA") yaw = Math.min(.75, yaw + .07);
+  if (event.code === "KeyD") yaw = Math.max(-.75, yaw - .07);
+  if (event.code === "Space" && running) {
+    event.preventDefault();
+    $("maskBtn").click();
+  }
+});
+
+addEventListener("mousemove", event => {
+  if (document.pointerLockElement === renderer.domElement) {
+    yaw = THREE.MathUtils.clamp(yaw - event.movementX * .002, -.8, .8);
+  }
+});
+
 addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
+/* ---------- Game loop ---------- */
 const clock = new THREE.Clock();
+
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), .05);
@@ -380,44 +870,72 @@ function frame() {
   if (running && !ended) {
     elapsed += dt;
 
-    // Power drains faster when equipment is active.
     let drain = .12;
     if (camerasOn) drain += .11;
     if (radioOn) drain += .09;
     if (maskOn) drain += .16;
-    for (const closed of Object.values(devices)) if (closed) drain += .08;
+    for (const isClosed of Object.values(devices)) {
+      if (isClosed) drain += .08;
+    }
+
     power = Math.max(0, power - drain * dt);
 
-    const minute = Math.min(6, Math.floor(elapsed / 30));
-    $("time").textContent = minute === 0 ? "12:00 AM" : `${minute}:00 AM`;
+    const hour = Math.min(6, Math.floor(elapsed / 30));
+    $("time").textContent = hour === 0 ? "12:00 AM" : `${hour}:00 AM`;
 
     if (power <= 0) {
       $("systemText").textContent = "POWER OUT";
       camerasOn = maskOn = radioOn = false;
-      for (const k of Object.keys(devices)) devices[k] = false;
-      stopRadio(); updateUI();
+      for (const key of Object.keys(devices)) devices[key] = false;
+      stopRadio();
+      updateUI();
       lamp.intensity = 1;
     } else {
       $("systemText").textContent = attack ? "MOTION DETECTED" : "SYSTEMS NORMAL";
+      lamp.intensity = 22;
     }
 
-    // Animate doors and blinds.
-    doors.left.position.z += ((devices.leftDoor ? 0 : -1.4) - doors.left.position.z) * Math.min(1, dt * 5);
-    doors.right.position.z += ((devices.rightDoor ? 0 : -1.4) - doors.right.position.z) * Math.min(1, dt * 5);
+    // Door panels slide aside when open.
+    const doorOpenZ = -4.7;
+    const doorClosedZ = -1.4;
+    doors.left.position.z += (
+      (devices.leftDoor ? doorClosedZ : doorOpenZ) - doors.left.position.z
+    ) * Math.min(1, dt * 5);
+    doors.right.position.z += (
+      (devices.rightDoor ? doorClosedZ : doorOpenZ) - doors.right.position.z
+    ) * Math.min(1, dt * 5);
+
+    // Blinds lift when open and drop when closed.
     for (const key of ["leftBlind", "rightBlind"]) {
       blinds[key].forEach((slat, i) => {
-        const target = devices[key] ? 1.2 + i * .1 : 1.65 + i * .2;
+        const openY = 1.42 + i * .2;
+        const closedY = 2.5 + i * .1;
+        const target = devices[key] ? closedY : openY;
         slat.position.y += (target - slat.position.y) * Math.min(1, dt * 4);
       });
     }
 
     if (attack) {
-      attack.progress += dt / 14;
+      attack.progress += dt / 15;
+
       const figure = figures[attack.lane];
-      figure.visible = attack.progress > .42;
+      figure.visible = attack.progress > .27;
+      figure.position.y = Math.sin(elapsed * 5) * .035;
+      figure.userData.head.rotation.y = Math.sin(elapsed * 2.7) * .12;
+
+      for (const limb of figure.userData.limbs) {
+        limb.arm.rotation.x = Math.sin(elapsed * 4) * .28 * limb.side;
+        limb.leg.rotation.x = -Math.sin(elapsed * 4) * .22 * limb.side;
+      }
+
       if (camerasOn) updateFeed();
+
+      if (attack.progress > .72) {
+        $("warning").textContent =
+          `CHECK ${attack.lane.replace(/([A-Z])/g, " $1").toUpperCase()}`;
+      }
+
       if (attack.progress >= 1) attemptDefense();
-      else if (attack.progress > .75) $("warning").textContent = `CHECK ${laneNames[attack.lane]}`;
     } else {
       nextAttack -= dt;
       if (nextAttack <= 0 && power > 0) {
@@ -429,18 +947,13 @@ function frame() {
       }
     }
 
-    if (elapsed >= 180) {
-      ended = true; running = false; stopRadio();
-      $("title").textContent = "6:00 AM";
-      $("description").textContent = "You survived the night.";
-      $("start").textContent = "PLAY AGAIN";
-      $("menu").style.display = "grid";
-    }
+    if (elapsed >= 180) winNight();
   }
 
   camera.rotation.y = yaw;
   renderer.render(scene, camera);
 }
+
 updateUI();
 frame();
 </script>

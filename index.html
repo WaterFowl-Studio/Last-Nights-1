@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Last Nights 1</title>
+<style>
+  * { box-sizing: border-box }
+  body { margin: 0; overflow: hidden; background: #050706; color: #dce8df;
+         font: 14px monospace }
+  canvas { display: block }
+  button { color: #d6ffe1; background: #101812; border: 1px solid #62816b;
+           padding: 10px; font: inherit; cursor: pointer }
+  button:hover, button.on { background: #294532 }
+  #hud { position: fixed; inset: 0; pointer-events: none }
+  #top { display: flex; justify-content: space-between; padding: 15px 18px;
+         background: linear-gradient(#020403d9, transparent); text-shadow: 0 0 8px #86ffa6 }
+  #leftStatus { position: absolute; left: 16px; top: 64px; line-height: 1.7;
+                text-shadow: 0 0 7px #80ffa0 }
+  #powerTrack { width: 180px; height: 14px; border: 1px solid #b9d0bf;
+                background: #101310 }
+  #powerBar { height: 100%; width: 100%; background: #70e88a }
+  #controls { position: absolute; bottom: 14px; left: 14px; right: 14px;
+              display: flex; flex-wrap: wrap; gap: 7px; justify-content: center;
+              pointer-events: auto }
+  #cams { position: fixed; right: 18px; top: 68px; display: none; z-index: 2;
+          width: min(330px, 45vw); padding: 12px; background: #06100bdc;
+          border: 1px solid #52745e; box-shadow: 0 0 20px #000 }
+  #camTitle { color: #a8ffbb; margin-bottom: 8px }
+  #camMap { display: grid; grid-template-columns: 1fr 1fr; gap: 5px }
+  #camMap button { padding: 7px; font-size: 12px }
+  #feed { margin-top: 10px; min-height: 76px; padding: 10px; color: #c0d4c5;
+          background: repeating-linear-gradient(0deg,#16221a,#16221a 2px,#0c140f 3px,#0c140f 5px) }
+  #warning { position: fixed; left: 0; right: 0; top: 43%; text-align: center;
+             color: #ff6262; font-size: 21px; text-shadow: 0 0 12px red;
+             pointer-events: none }
+  #maskShade { position: fixed; inset: 0; z-index: 3; display: none;
+               pointer-events: none; background: radial-gradient(ellipse,transparent 27%,#000 72%);
+               border: 32px solid #111; box-shadow: inset 0 0 35px #000 }
+  #scare, #menu { position: fixed; inset: 0; display: none; place-items: center;
+                  z-index: 5; background: #030403f2; text-align: center }
+  #menu { display: grid; z-index: 6 }
+  #panel { width: min(520px,92vw); padding: 26px; background: #09110c;
+           border: 1px solid #668b70 }
+  #face { width: min(65vw,65vh); height: min(65vw,65vh); border-radius: 45%;
+          position: relative; background: #72756b; box-shadow: inset 0 0 55px #000,0 0 70px #b00;
+          animation: lunge .28s infinite alternate steps(2) }
+  .eye { position: absolute; top: 30%; width: 20%; height: 16%; border-radius: 50%;
+         background: #ff2818; box-shadow: 0 0 25px red }
+  .eye:first-child { left: 17% } .eye:nth-child(2) { right: 17% }
+  #mouth { position: absolute; top: 60%; left: 24%; width: 52%; height: 22%;
+           background: #170d0b; border: 5px solid #38231d; border-radius: 12% 12% 45% 45% }
+  @keyframes lunge { from { transform: scale(.75) rotate(-5deg) }
+                     to { transform: scale(1.2) rotate(5deg) } }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="top"><b>LAST NIGHTS 1</b><span id="time">12:00 AM</span></div>
+  <div id="leftStatus">
+    POWER <span id="powerText">100</span>%<div id="powerTrack"><div id="powerBar"></div></div>
+    <span id="systemText">SYSTEMS NORMAL</span>
+  </div>
+  <div id="warning"></div>
+  <div id="cams">
+    <div id="camTitle">CAMERAS — <span id="camName">STAGE</span></div>
+    <div id="camMap"></div>
+    <div id="feed">STATIC — no movement detected</div>
+  </div>
+  <div id="controls">
+    <button data-device="leftDoor">LEFT DOOR: OPEN</button>
+    <button data-device="rightDoor">RIGHT DOOR: OPEN</button>
+    <button data-device="leftBlind">LEFT BLIND: OPEN</button>
+    <button data-device="rightBlind">RIGHT BLIND: OPEN</button>
+    <button id="maskBtn">MASK: OFF</button>
+    <button id="camBtn">CAMERAS: OFF</button>
+    <button id="radioBtn">RADIO: OFF</button>
+  </div>
+</div>
+<div id="maskShade"></div>
+<div id="scare"><div id="face"><div class="eye"></div><div class="eye"></div><div id="mouth"></div></div></div>
+<div id="menu"><div id="panel">
+  <h1 id="title">LAST NIGHTS 1</h1>
+  <p id="description">Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.</p>
+  <p>Close the correct door or blind when something approaches. The mask can protect you, but every system uses power.</p>
+  <button id="start">START NIGHT</button>
+</div></div>
+
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050706);
+scene.fog = new THREE.Fog(0x050706, 8, 24);
+
+const camera = new THREE.PerspectiveCamera(65, innerWidth / innerHeight, .1, 60);
+camera.position.set(0, 1.65, 5);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0x9aab9a, 0x17120e, 1.25));
+const lamp = new THREE.PointLight(0xbaffca, 22, 14);
+lamp.position.set(0, 3.2, 1);
+scene.add(lamp);
+
+function mat(color, roughness = .9) {
+  return new THREE.MeshStandardMaterial({ color, roughness });
+}
+function box(x, y, z, w, h, d, material, parent = scene) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+  mesh.position.set(x, y, z);
+  mesh.castShadow = mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+// Office
+box(0, -.15, 0, 10, .3, 12, mat(0x28241e));
+box(0, 4, 0, 10, .2, 12, mat(0x111511));
+box(0, 2, -6, 10, 4, .25, mat(0x34382f));
+box(-5, 2, 0, .25, 4, 12, mat(0x34382f));
+box(5, 2, 0, .25, 4, 12, mat(0x34382f));
+
+// Desk and monitor
+box(0, .85, 2.2, 4.4, .2, 1.5, mat(0x422d20));
+box(-1.7, .4, 2.2, .16, .8, .16, mat(0x211914));
+box(1.7, .4, 2.2, .16, .8, .16, mat(0x211914));
+box(0, 1.5, 1.55, 1.15, .75, .12, mat(0x111a15));
+box(0, 1.5, 1.48, .95, .54, .02,
+    new THREE.MeshBasicMaterial({ color: 0x143b25 }));
+
+// Two sliding door panels.
+const doors = {
+  left: box(-4.65, 1.65, -1.4, .18, 3.2, 2.5, mat(0x55574f)),
+  right: box(4.65, 1.65, -1.4, .18, 3.2, 2.5, mat(0x55574f))
+};
+for (const x of [-4.83, 4.83]) {
+  box(x, 1.65, -1.4, .12, 3.5, 2.8, mat(0x171a16));
+}
+
+// Two windows with animated slats.
+const blinds = {};
+for (const [name, x] of [["leftBlind", -2.05], ["rightBlind", 2.05]]) {
+  box(x, 2.35, -5.82, 1.65, 1.9, .08, mat(0x07100b));
+  const slats = [];
+  for (let i = 0; i < 8; i++) {
+    slats.push(box(x, 1.65 + i * .2, -5.72, 1.55, .09, .1, mat(0x77796c)));
+  }
+  blinds[name] = slats;
+}
+
+// Simple silhouettes outside the office.
+function makeFigure(color) {
+  const g = new THREE.Group();
+  const bodyMat = mat(color, .55);
+  box(0, 1.2, 0, .8, 1.3, .5, bodyMat, g);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.48, 14, 10), bodyMat);
+  head.position.y = 2.15; head.castShadow = true; g.add(head);
+  for (const x of [-.17, .17]) {
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.07, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff291b }));
+    eye.position.set(x, 2.2, -.43); g.add(eye);
+  }
+  g.visible = false;
+  scene.add(g);
+  return g;
+}
+const figures = {
+  leftDoor: makeFigure(0x605d4e),
+  rightDoor: makeFigure(0x4d6159),
+  leftBlind: makeFigure(0x705a50),
+  rightBlind: makeFigure(0x54536c),
+  mask: makeFigure(0x776b4c)
+};
+figures.leftDoor.position.set(-4.5, 0, -1.5);
+figures.rightDoor.position.set(4.5, 0, -1.5);
+figures.leftBlind.position.set(-2, 0, -5.2);
+figures.rightBlind.position.set(2, 0, -5.2);
+figures.mask.position.set(0, 0, 1.5);
+
+// Camera choices
+const cameraNames = ["STAGE", "DINING ROOM", "KITCHEN", "BACK HALL", "SUPPLY ROOM"];
+let selectedCam = "STAGE";
+for (const name of cameraNames) {
+  const b = document.createElement("button");
+  b.textContent = name;
+  b.onclick = () => {
+    selectedCam = name;
+    document.querySelector("#camName").textContent = name;
+    updateFeed();
+  };
+  document.querySelector("#camMap").appendChild(b);
+}
+
+// Game state
+const devices = { leftDoor: false, rightDoor: false, leftBlind: false, rightBlind: false };
+let running = false, ended = false, elapsed = 0, power = 100;
+let maskOn = false, camerasOn = false, radioOn = false;
+let attack = null, nextAttack = 9;
+let yaw = 0;
+const $ = id => document.getElementById(id);
+const lanes = ["leftDoor", "rightDoor", "leftBlind", "rightBlind", "mask"];
+const laneNames = {
+  leftDoor: "LEFT DOOR", rightDoor: "RIGHT DOOR",
+  leftBlind: "LEFT BLIND", rightBlind: "RIGHT BLIND", mask: "OFFICE"
+};
+
+function updateUI() {
+  document.querySelectorAll("[data-device]").forEach(button => {
+    const key = button.dataset.device;
+    const label = key.replace(/([A-Z])/g, " $1").toUpperCase();
+    button.textContent = `${label}: ${devices[key] ? "CLOSED" : "OPEN"}`;
+    button.classList.toggle("on", devices[key]);
+  });
+  $("maskBtn").textContent = `MASK: ${maskOn ? "ON" : "OFF"}`;
+  $("maskBtn").classList.toggle("on", maskOn);
+  $("camBtn").textContent = `CAMERAS: ${camerasOn ? "ON" : "OFF"}`;
+  $("radioBtn").textContent = `RADIO: ${radioOn ? "ON" : "OFF"}`;
+  $("cams").style.display = camerasOn ? "block" : "none";
+  $("maskShade").style.display = maskOn ? "block" : "none";
+  $("powerText").textContent = Math.ceil(power);
+  $("powerBar").style.width = `${Math.max(0, power)}%`;
+  $("powerBar").style.background = power < 25 ? "#ed4545" : power < 50 ? "#e0c547" : "#70e88a";
+}
+
+// Synthesized eerie radio loop; no audio files needed.
+let audioCtx, radioNodes = [], radioTimer;
+function stopRadio() {
+  clearInterval(radioTimer);
+  for (const node of radioNodes) {
+    try { node.stop?.(); node.disconnect?.(); } catch {}
+  }
+  radioNodes = [];
+}
+function startRadio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  audioCtx = audioCtx || new AC();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  const gain = audioCtx.createGain();
+  gain.gain.value = .035;
+  gain.connect(audioCtx.destination);
+  const osc = audioCtx.createOscillator();
+  osc.type = "triangle";
+  osc.frequency.value = 68;
+  osc.connect(gain); osc.start();
+  const wobble = audioCtx.createOscillator();
+  const wobbleGain = audioCtx.createGain();
+  wobble.frequency.value = .18; wobbleGain.gain.value = 9;
+  wobble.connect(wobbleGain); wobbleGain.connect(osc.frequency); wobble.start();
+  radioNodes = [osc, wobble];
+  radioTimer = setInterval(() => {
+    const notes = [55, 65.4, 73.4, 82.4, 98];
+    osc.frequency.setTargetAtTime(notes[Math.floor(Math.random() * notes.length)],
+      audioCtx.currentTime, .6);
+  }, 1800);
+}
+function beep(freq = 120, duration = .15) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = audioCtx || new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = "sawtooth"; o.frequency.value = freq;
+    g.gain.setValueAtTime(.05, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + duration);
+  } catch {}
+}
+
+function updateFeed() {
+  const visible = attack && attack.progress > .25;
+  $("feed").textContent = visible
+    ? `STATIC — MOVEMENT: ${laneNames[attack.lane]}`
+    : "STATIC — no movement detected";
+}
+function scare() {
+  if (ended) return;
+  ended = true; running = false;
+  stopRadio();
+  $("scare").style.display = "grid";
+  beep(95, .8);
+  setTimeout(() => {
+    $("scare").style.display = "none";
+    $("title").textContent = "SHIFT OVER";
+    $("description").textContent = "Something got into the office. Try again and watch your power.";
+    $("start").textContent = "TRY AGAIN";
+    $("menu").style.display = "grid";
+  }, 1200);
+}
+function surviveAttack() {
+  $("warning").textContent = "IT MOVED AWAY";
+  beep(70, .22);
+  attack = null;
+  nextAttack = 8 + Math.random() * 10;
+  Object.values(figures).forEach(f => f.visible = false);
+  updateFeed();
+  setTimeout(() => { if (running) $("warning").textContent = ""; }, 1500);
+}
+
+document.querySelectorAll("[data-device]").forEach(button => {
+  button.onclick = () => {
+    if (!running || ended || power <= 0) return;
+    const key = button.dataset.device;
+    devices[key] = !devices[key];
+    beep(devices[key] ? 90 : 180);
+    updateUI();
+  };
+});
+$("maskBtn").onclick = () => {
+  if (!running || ended || power <= 0) return;
+  maskOn = !maskOn; beep(maskOn ? 75 : 160); updateUI();
+};
+$("camBtn").onclick = () => {
+  if (!running || ended || power <= 0) return;
+  camerasOn = !camerasOn; beep(camerasOn ? 400 : 220); updateUI(); updateFeed();
+};
+$("radioBtn").onclick = () => {
+  if (!running || ended || power <= 0) return;
+  radioOn = !radioOn;
+  if (radioOn) startRadio(); else stopRadio();
+  updateUI();
+};
+
+$("start").onclick = () => {
+  $("menu").style.display = "none";
+  $("scare").style.display = "none";
+  $("title").textContent = "LAST NIGHTS 1";
+  $("start").textContent = "START NIGHT";
+  $("description").textContent = "Stay in the office. Watch the cameras, manage your power, and make it to 6 AM.";
+  running = true; ended = false; elapsed = 0; power = 100;
+  attack = null; nextAttack = 7 + Math.random() * 6;
+  maskOn = camerasOn = radioOn = false;
+  for (const k of Object.keys(devices)) devices[k] = false;
+  Object.values(figures).forEach(f => f.visible = false);
+  $("warning").textContent = "";
+  updateUI();
+};
+
+function attemptDefense() {
+  if (!attack) return;
+  const defended = maskOn || devices[attack.lane];
+  if (defended) {
+    power = Math.max(0, power - 2);
+    surviveAttack();
+  } else {
+    scare();
+  }
+}
+
+addEventListener("keydown", e => {
+  if (e.code === "KeyA") yaw = Math.min(.75, yaw + .07);
+  if (e.code === "KeyD") yaw = Math.max(-.75, yaw - .07);
+  if (e.code === "Space" && running) {
+    e.preventDefault(); maskOn = !maskOn; updateUI();
+  }
+});
+addEventListener("mousemove", e => {
+  if (document.pointerLockElement === renderer.domElement) {
+    yaw = THREE.MathUtils.clamp(yaw - e.movementX * .002, -.8, .8);
+  }
+});
+renderer.domElement.addEventListener("click", () => {
+  if (running) renderer.domElement.requestPointerLock?.();
+});
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+const clock = new THREE.Clock();
+function frame() {
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), .05);
+
+  if (running && !ended) {
+    elapsed += dt;
+
+    // Power drains faster when equipment is active.
+    let drain = .12;
+    if (camerasOn) drain += .11;
+    if (radioOn) drain += .09;
+    if (maskOn) drain += .16;
+    for (const closed of Object.values(devices)) if (closed) drain += .08;
+    power = Math.max(0, power - drain * dt);
+
+    const minute = Math.min(6, Math.floor(elapsed / 30));
+    $("time").textContent = minute === 0 ? "12:00 AM" : `${minute}:00 AM`;
+
+    if (power <= 0) {
+      $("systemText").textContent = "POWER OUT";
+      camerasOn = maskOn = radioOn = false;
+      for (const k of Object.keys(devices)) devices[k] = false;
+      stopRadio(); updateUI();
+      lamp.intensity = 1;
+    } else {
+      $("systemText").textContent = attack ? "MOTION DETECTED" : "SYSTEMS NORMAL";
+    }
+
+    // Animate doors and blinds.
+    doors.left.position.z += ((devices.leftDoor ? 0 : -1.4) - doors.left.position.z) * Math.min(1, dt * 5);
+    doors.right.position.z += ((devices.rightDoor ? 0 : -1.4) - doors.right.position.z) * Math.min(1, dt * 5);
+    for (const key of ["leftBlind", "rightBlind"]) {
+      blinds[key].forEach((slat, i) => {
+        const target = devices[key] ? 1.2 + i * .1 : 1.65 + i * .2;
+        slat.position.y += (target - slat.position.y) * Math.min(1, dt * 4);
+      });
+    }
+
+    if (attack) {
+      attack.progress += dt / 14;
+      const figure = figures[attack.lane];
+      figure.visible = attack.progress > .42;
+      if (camerasOn) updateFeed();
+      if (attack.progress >= 1) attemptDefense();
+      else if (attack.progress > .75) $("warning").textContent = `CHECK ${laneNames[attack.lane]}`;
+    } else {
+      nextAttack -= dt;
+      if (nextAttack <= 0 && power > 0) {
+        const lane = lanes[Math.floor(Math.random() * lanes.length)];
+        attack = { lane, progress: 0 };
+        $("warning").textContent = "MOVEMENT DETECTED";
+        beep(68, .3);
+        updateFeed();
+      }
+    }
+
+    if (elapsed >= 180) {
+      ended = true; running = false; stopRadio();
+      $("title").textContent = "6:00 AM";
+      $("description").textContent = "You survived the night.";
+      $("start").textContent = "PLAY AGAIN";
+      $("menu").style.display = "grid";
+    }
+  }
+
+  camera.rotation.y = yaw;
+  renderer.render(scene, camera);
+}
+updateUI();
+frame();
+</script>
+</body>
+</html>
